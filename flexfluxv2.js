@@ -40,7 +40,7 @@ function createModal() {
         modal.style.display = "none";
     };
 
-    var credits = "Welcome to Flex Flux!! These reports are based on estimations which rely on flex marks. There are some limitations to the script, such as considering only the best marks and its inability to calculate marks for subjects whose weightage has not been uploaded by the teacher.";
+    var credits = "Welcome to Flex Flux By Ajmal Razaq Bhatti!! These reports are based on estimations which rely on flex marks. There are some limitations to the script, such as considering only the best marks and its inability to calculate marks for subjects whose weightage has not been uploaded by the teacher.";
     modalContent.innerHTML += "<img src='" + userPic + "' alt='User Picture' style='max-width: 100px; height: auto; border-radius:50%;'>";
     modalContent.innerHTML += "<p style='font-size:22px;margin:12px;'>Heyy, " + userName + "</p>";
     modalContent.innerHTML += "<p style='margin:20px;'>" + credits + "</p>";
