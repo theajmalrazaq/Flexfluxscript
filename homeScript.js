@@ -152,9 +152,16 @@ else {
   document.head.appendChild(link);
 
   let userdiv = document.createElement("div");
+  let userdivcol1 = document.createElement("div");
+  userdivcol1.style.display = "flex";
+  userdivcol1.style.flexDirection = "column";
+  userdivcol1.style.justifyContent = "start";
+  userdivcol1.style.alignItems = "start";
+
+  let userdivcol2 = document.createElement("div");
   userdiv.style.display = "flex";
-  userdiv.style.flexDirection = "column";
-  userdiv.style.justifyContent = "start";
+  userdiv.style.flexDirection = "row";
+  userdiv.style.justifyContent = "space-between";
   userdiv.style.alignItems = "start";
   userdiv.style.backgroundColor = "#212121";
   userdiv.style.padding = "30px";
@@ -170,7 +177,7 @@ else {
   let rollno = document
     .querySelectorAll(".m-portlet__body")[0]
     .querySelector(".row .col-md-4 p span:nth-child(2)").textContent;
-  userdiv.appendChild(userimg);
+  userdivcol1.appendChild(userimg);
   let userrollno = document.createElement("p");
   userrollno.style.color = "white";
   userrollno.style.fontWeight = "700";
@@ -181,8 +188,8 @@ else {
   userwelcome.style.fontSize = "20px";
   userwelcome.style.marginTop = "10px";
   userwelcome.innerHTML = `<span style='color:#FF2600;'>Welcome </span> ${username} 😎`;
-  userdiv.append(userwelcome);
-  userdiv.append(userrollno);
+  userdivcol1.append(userwelcome);
+  userdivcol1.append(userrollno);
   document.querySelector(".m-subheader").style.display = "none";
   // Apply the font dynamically
   link.onload = () => {
@@ -232,9 +239,33 @@ else {
         ".m-portlet.m-portlet--tabs.m-portlet--brand.m-portlet--border-bottom-brand.m-portlet--head-solid-bg.m-portlet--head-sm"
       );
 
-      // If the target div exists, update your main div
+      // Check if targetDiv exists before proceeding
       if (targetDiv) {
-        attendencediv.innerHTML = targetDiv.outerHTML; // Get the HTML of the target div
+        // Extract the .m-portlet__head section and append it to attendencediv
+        let tempDivHead = document.createElement("div");
+        tempDivHead.innerHTML =
+          targetDiv.querySelector(".m-portlet__head").outerHTML;
+        attendencediv.appendChild(tempDivHead);
+
+        // Extract the .m-portlet__body section and append it to attendencediv
+        let tempDivBody = document.createElement("div");
+        tempDivBody.innerHTML =
+          targetDiv.querySelector(".m-portlet__body").outerHTML;
+        attendencediv.appendChild(tempDivBody);
+
+        // Now target the appended content within attendencediv
+        let tabs = attendencediv.querySelectorAll(
+          ".m-portlet__body > .tab-content > .tab-pane"
+        );
+
+        tabs.forEach((tab) => {
+          let rows = tab.querySelectorAll(".row");
+
+          // If the second row exists, remove it from attendencediv
+          if (rows[2]) {
+            rows[2].remove();
+          }
+        });
       } else {
         console.error("Target div not found in the response");
       }
@@ -242,7 +273,9 @@ else {
     .catch((error) => {
       console.error("Error fetching HTML content:", error);
     });
-  document.body.appendChild(attendencediv);
+  userdivcol2.appendChild(attendencediv);
+  userdiv.appendChild(userdivcol1);
+  userdiv.appendChild(userdivcol2);
   ul.style.listStyleType = "none";
   ul.style.paddingInlineStart = "0px";
   ul.style.borderRadius = "8px";
