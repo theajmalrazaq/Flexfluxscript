@@ -245,13 +245,74 @@ else {
         let tempDivHead = document.createElement("div");
         tempDivHead.innerHTML =
           targetDiv.querySelector(".m-portlet__head").outerHTML;
+        tempDivHead.style.color = "white";
         attendencediv.appendChild(tempDivHead);
 
         // Extract the .m-portlet__body section and append it to attendencediv
         let tempDivBody = document.createElement("div");
         tempDivBody.innerHTML =
           targetDiv.querySelector(".m-portlet__body").outerHTML;
+        tempDivBody.style.color = "white";
+        // Select all the nav-link elements inside the nav-tabs
+        let activediv = tempDivHead.querySelectorAll(
+          ".m-portlet__head-tools .nav-tabs .nav-item .nav-link"
+        );
+
+        // Set the background color for the initially active tab
+        activediv.forEach((element) => {
+          if (element.classList.contains("active")) {
+            element.style.backgroundColor = "#FF2600";
+            element.style.borderRadius = "8px";
+            element.style.color = "white";
+            let activeTabId = element.getAttribute("href").substring(1);
+            let activeTabPane = document.getElementById(activeTabId);
+            if (activeTabPane) {
+              activeTabPane.classList.add("active");
+            }
+          }
+        });
+
+        activediv.forEach((element) => {
+          element.addEventListener("click", (event) => {
+            // Prevent default action
+            event.preventDefault();
+            activediv.forEach((el) => {
+              el.classList.remove("active");
+              el.style.backgroundColor = "";
+              let tabId = el.getAttribute("href").substring(1);
+              let tabPane = document.getElementById(tabId);
+              if (tabPane) {
+                tabPane.classList.remove("active");
+              }
+            });
+
+            element.classList.add("active");
+            element.style.backgroundColor = "#FF2600";
+            element.style.borderRadius = "8px";
+            element.style.color = "white";
+
+            let activeTabId = element.getAttribute("href").substring(1);
+            let activeTabPane = document.getElementById(activeTabId);
+            if (activeTabPane) {
+              activeTabPane.classList.add("active");
+            }
+          });
+        });
+
         attendencediv.appendChild(tempDivBody);
+        tempDivBody.querySelectorAll(".bg-success").forEach((element) => {
+          const currentStyle = element.getAttribute("style") || "";
+          document.querySelectorAll(".progress").forEach((element) => {
+            element.style.backgroundColor = "#323232";
+            element.style.borderRadius = "99px";
+          });
+          document.querySelector(".m-tabs-line").style.border = "none";
+          // Append the new style while keeping existing styles intact
+          const newStyle = `${currentStyle}; background-color: #FF2600 !important; border-radius: 99px; color: white !important`;
+
+          // Set the updated style back to the element
+          element.setAttribute("style", newStyle);
+        });
 
         // Now target the appended content within attendencediv
         let tabs = attendencediv.querySelectorAll(
@@ -260,6 +321,28 @@ else {
 
         tabs.forEach((tab) => {
           let rows = tab.querySelectorAll(".row");
+          const table = rows[2].querySelector(".table");
+
+          if (table) {
+            const rows = table.querySelectorAll("tbody tr"); // Get all rows in the table body
+            let absenceCount = 0;
+
+            // Loop through each row and check the 'Presence' column (4th column in each row)
+            rows.forEach((row) => {
+              let presenceCell = row.cells[3]; // The 4th cell (index 3) contains the presence (P or A)
+              let presence = presenceCell
+                .querySelector("label")
+                .textContent.trim(); // Get the text content of the label
+
+              // If the presence is 'A', increment the absence counter
+              if (presence === "A") {
+                absenceCount++;
+              }
+            });
+
+            // Log or use the absence count as needed
+            console.log("Total Absences: " + absenceCount);
+          }
 
           // If the second row exists, remove it from attendencediv
           if (rows[2]) {
